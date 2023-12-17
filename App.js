@@ -1,19 +1,39 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, SafeAreaView, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, SafeAreaView, Text, View } from 'react-native';
 
 const Country = ({ country }) => {
-  console.log('country', country.item.name?.common)
+
   const countryDetail = country.item;
 
-  const name = countryDetail.name?.common;
-  
+  const name = countryDetail.name?.common || '-';
+  const region = countryDetail.region || '-';
+  const capitals = countryDetail?.capital?.join(', ') || '-';
+  const population = countryDetail?.population.toLocaleString('en-IN') || '-';
+  const flag = countryDetail?.flags?.png;
+  console.log('flag', flag)
+
   return (
-    <View>
-      <Text>{name}</Text>
-      {/* <Text>{name}</Text>
-      <Text>{capital}</Text>
-      <Text>{region}</Text> */}
+    <View className='flex-row bg-blue-500 m-2 px-4 py-3 rounded-lg overflow-hidden'>
+      {/* Flag */}
+      <View className="mr-3">
+        <Image 
+          source={{ uri: flag }}
+          style={{ 
+            flex: 1,
+            resizeMode: 'contain',
+            width: 90,
+          }} 
+          />
+      </View>
+
+      {/* Country Details */}
+      <View>
+        <Text className="text-2xl">{name}</Text>
+        <Text>Region: {region}</Text>
+        <Text>Capital: {capitals}</Text>
+        <Text>Population: {population}</Text>
+      </View>
     </View>
   )
 }
@@ -27,7 +47,8 @@ export default function App() {
     try {
       const uri = 'https://restcountries.com/v3.1/all';
       const res = await axios.get(uri);
-      setCountries(res.data);
+      const data = res.data.slice(0, 5);
+      setCountries(data);
     } catch (err) {
       console.log(err)
     } finally {
@@ -40,7 +61,7 @@ export default function App() {
   }, [])
 
   return (
-    <View>
+    <View className="mt-5 bg-slate-300 min-h-screen">
       {isLoading ? (
         <ActivityIndicator />
       ) :
@@ -50,9 +71,8 @@ export default function App() {
             renderItem={(country) => (
               <Country
                 country={country}
-              // keyExtractor={item => item.id}
-              // extraData={selectedId}
-              />)}
+              />
+            )}
           />
         </SafeAreaView>)
       }
