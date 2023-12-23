@@ -16,35 +16,35 @@ const Country = ({ country }) => {
     <View className='flex-row m-2 px-4 py-2 overflow-hidden block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700'>
      
       {/* Flag */}
-      <View className="mr-3">
-        <Image
-          source={{ uri: flag }}
-          style={{
-            flex: 1,
-            resizeMode: 'contain',
-            width: 90,
-          }}
-        />
+        <View className="mr-3">
+          <Image
+            source={{ uri: flag }}
+            style={{
+              flex: 1,
+              resizeMode: 'contain',
+              width: 90,
+            }}
+          />
+        </View>
+
+        {/* Country Details */}
+        <View>
+          <Text className="text-2xl">{name}</Text>
+          <Text>Region: {region}</Text>
+          <Text>Capital: {capitals}</Text>
+          <Text>Population: {population}</Text>
+        </View>
       </View>
+    )
+  }
 
-      {/* Country Details */}
-      <View>
-        <Text className="text-2xl">{name}</Text>
-        <Text>Region: {region}</Text>
-        <Text>Capital: {capitals}</Text>
-        <Text>Population: {population}</Text>
-      </View>
-    </View>
-  )
-}
+  export default function App() {
 
-export default function App() {
+    const [isLoading, setLoading] = useState(true);
+    const [countries, setCountries] = useState([]);
+    const [filteredCountries, setFilteredCountries] = useState([]);
 
-  const [isLoading, setLoading] = useState(true);
-  const [countries, setCountries] = useState([]);
-  const [filteredCountries, setFilteredCountries] = useState([]);
-
-  useEffect(() => {
+    useEffect(() => {
     getCountries();
   }, [])
 
@@ -62,8 +62,7 @@ export default function App() {
   }
 
   const searchCountries = (string) => {
-    const countriesCopy = [...countries];
-    const filteredCountries = countriesCopy.filter(country => country?.name?.common.includes(string));
+    const filteredCountries = countries.filter((country) => country.name.common.toLowerCase().includes(string.toLowerCase()));
     setFilteredCountries(() => filteredCountries);
   }
 
